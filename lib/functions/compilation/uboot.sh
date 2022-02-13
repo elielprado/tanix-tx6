@@ -66,7 +66,7 @@ function compile_uboot_target() {
 
 	display_alert "${uboot_prefix}Compiling u-boot" "${version} ${target_make}" "info"
 	export MSG_IF_ERROR="${uboot_prefix}Failed to build u-boot ${version} ${target_make}"
-	run_host_command_logged_long_running CCACHE_BASEDIR="$(pwd)" PATH="${toolchain}:${toolchain2}:${PATH}" make "$target_make" "$CTHREADS" "${cross_compile}"
+	run_host_command_logged_long_running CCACHE_BASEDIR="$(pwd)" PATH="${toolchain}:${toolchain2}:${PATH}" CFLAGS="-fdiagnostics-color=always" make "$target_make" "$CTHREADS" "${cross_compile}" CFLAGS="-fdiagnostics-color=always"
 
 	if [[ $(type -t uboot_custom_postprocess) == function ]]; then
 		display_alert "${uboot_prefix}Postprocessing u-boot" "${version} ${target_make}"
