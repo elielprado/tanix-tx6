@@ -85,18 +85,13 @@ compilation_prepare()
 	fi
 
 	if [[ "${version}" == "4.4."* ]] && \
-	[[ "$LINUXFAMILY" == rockchip64 || "$LINUXFAMILY" == media* || "$LINUXFAMILY" == renegade ]]; then
+	[[ "$LINUXFAMILY" == rockchip64 || "$LINUXFAMILY" == station* ]]; then
 		display_alert "Adjusting" "packaging" "info"
 		cd "$kerneldir" || exit
-		if [[ $BOARD == nanopct4 ]]; then
-			process_patch_file "${SRC}/patch/misc/general-packaging-4.4.y-rk3399.patch" "applying"
-		else
-			process_patch_file "${SRC}/patch/misc/general-packaging-4.4.y-rockchip64.patch" "applying"
-		fi
+		process_patch_file "${SRC}/patch/misc/general-packaging-4.4.y-rockchip64.patch" "applying"
 	fi
 
-	if [[ "${version}" == "4.4."* ]] && \
-	[[ "$LINUXFAMILY" == rockchip || "$LINUXFAMILY" == rk322x || "$LINUXFAMILY" == rk3288 ]]; then
+	if [[ "${version}" == "4.4."* ]] && [[ "$LINUXFAMILY" == rockchip || "$LINUXFAMILY" == rk322x ]]; then
                 display_alert "Adjusting" "packaging" "info"
                 cd "$kerneldir" || exit
                 process_patch_file "${SRC}/patch/misc/general-packaging-4.4.y.patch" "applying"
@@ -112,21 +107,20 @@ compilation_prepare()
 	# Linux splash file
 	#
 
-	if linux-version compare "${version}" ge 5.8.10 && [ $SKIP_BOOTSPLASH != yes ]; then
+	if linux-version compare "${version}" ge 5.10 && [ $SKIP_BOOTSPLASH != yes ]; then
 
 		display_alert "Adding" "Kernel splash file" "info"
 
-                if linux-version compare "${version}" ge 5.13; then
-                        process_patch_file "${SRC}/patch/misc/bootsplash-5.10.y-0001-Revert-vgacon-drop-unused-vga_init_done.patch" "applying"
-                fi
+		process_patch_file "${SRC}/patch/misc/bootsplash-5.16.y-0001-Revert-fbcon-Add-option-to-enable-legacy-hardware-ac.patch" "applying"
 
-		process_patch_file "${SRC}/patch/misc/bootsplash-5.8.10-0001-Revert-vgacon-remove-software-scrollback-support.patch" "applying"
-		process_patch_file "${SRC}/patch/misc/bootsplash-5.8.10-0002-Revert-fbcon-remove-now-unusued-softback_lines-curso.patch" "applying"
-		if linux-version compare "${version}" ge 5.10; then
-			process_patch_file "${SRC}/patch/misc/bootsplash-5.10.y-0003-Revert-fbcon-remove-soft-scrollback-code.patch" "applying"
-		else
-			process_patch_file "${SRC}/patch/misc/bootsplash-5.8.10-0003-Revert-fbcon-remove-soft-scrollback-code.patch" "applying"
+		if linux-version compare "${version}" ge 5.15; then
+			process_patch_file "${SRC}/patch/misc/bootsplash-5.16.y-0002-Revert-vgacon-drop-unused-vga_init_done.patch" "applying"
 		fi
+		process_patch_file "${SRC}/patch/misc/bootsplash-5.16.y-0003-Revert-vgacon-remove-software-scrollback-support.patch" "applying"
+		process_patch_file "${SRC}/patch/misc/bootsplash-5.16.y-0004-Revert-drivers-video-fbcon-fix-NULL-dereference-in-f.patch" "applying"
+		process_patch_file "${SRC}/patch/misc/bootsplash-5.16.y-0005-Revert-fbcon-remove-no-op-fbcon_set_origin.patch" "applying"
+		process_patch_file "${SRC}/patch/misc/bootsplash-5.16.y-0006-Revert-fbcon-remove-now-unusued-softback_lines-curso.patch" "applying"
+		process_patch_file "${SRC}/patch/misc/bootsplash-5.16.y-0007-Revert-fbcon-remove-soft-scrollback-code.patch" "applying"
 
 		process_patch_file "${SRC}/patch/misc/0001-bootsplash.patch" "applying"
 		process_patch_file "${SRC}/patch/misc/0002-bootsplash.patch" "applying"
@@ -173,6 +167,7 @@ compilation_prepare()
 		# manual overrides
 		if linux-version compare "${version}" ge 5.4.3 && linux-version compare "${version}" le 5.5 ; then aufstag="5.4.3"; fi
 		if linux-version compare "${version}" ge 5.10.82 && linux-version compare "${version}" le 5.11 ; then aufstag="5.10.82"; fi
+		if linux-version compare "${version}" ge 5.15.5 && linux-version compare "${version}" le 5.16 ; then aufstag="5.15.5"; fi
 
 		# check if Mr. Okajima already made a branch for this version
 		improved_git ls-remote --exit-code --heads $GITHUB_SOURCE/sfjro/aufs5-standalone "aufs${aufstag}" >/dev/null
@@ -386,7 +381,7 @@ compilation_prepare()
 
 
 	# Wireless drivers for Xradio XR819 chipsets
-	if linux-version compare "${version}" ge 4.19 && [[ ( "$LINUXFAMILY" == sunxi* && "$EXTRAWIFI" == yes ) || "$BOARD_NAME" == AW-H6-TV ]]; then
+	if linux-version compare "${version}" ge 4.19 && [[ ( "$LINUXFAMILY" == sunxi* && "$EXTRAWIFI" == yes ) || "$BOARD" == "tanix-tx6" ]]; then
 
 		display_alert "Adding" "Wireless drivers for Xradio XR819 chipsets" "info"
 
@@ -471,7 +466,9 @@ compilation_prepare()
 
 	# Wireless drivers for Realtek 8188EU 8188EUS and 8188ETV chipsets
 
-	if linux-version compare "${version}" ge 3.14 && [ "$EXTRAWIFI" == yes ]; then
+	if linux-version compare "${version}" ge 3.14 \
+		&& linux-version compare "${version}" lt 5.15 \
+		&& [ "$EXTRAWIFI" == yes ]; then
 
 		# attach to specifics tag or branch
 		local rtl8188euver="branch:v5.7.6.1"
@@ -604,18 +601,14 @@ compilation_prepare()
 
 	# Wireless drivers for Realtek 8723DS chipsets
 
-	if linux-version compare "${version}" ge 4.4 && [ "$EXTRAWIFI" == yes ]; then
+	if linux-version compare "${version}" ge 5.0 && [ "$EXTRAWIFI" == yes ]; then
 
 		# attach to specifics tag or branch
+		local rtl8723dsver="branch:master"
+
 		display_alert "Adding" "Wireless drivers for Realtek 8723DS chipsets ${rtl8723dsver}" "info"
 
-		if [ "$EXTRAWIFI_LOCAL" == yes ]; then
-			local rtl8723dsver="branch:local_rtl8723ds-rk"
-			fetch_from_repo "$GITHUB_SOURCE/wifi" "rtl8723ds" "${rtl8723dsver}" "yes"
-		else
-			local rtl8723dsver="branch:master"
-			fetch_from_repo "$GITHUB_SOURCE/lwfinger/rtl8723ds" "rtl8723ds" "${rtl8723dsver}" "yes"
-		fi
+		fetch_from_repo "$GITHUB_SOURCE/lwfinger/rtl8723ds" "rtl8723ds" "${rtl8723dsver}" "yes"
 		cd "$kerneldir" || exit
 		rm -rf "$kerneldir/drivers/net/wireless/rtl8723ds"
 		mkdir -p "$kerneldir/drivers/net/wireless/rtl8723ds/"
@@ -647,22 +640,18 @@ compilation_prepare()
 
 	# Wireless drivers for Realtek 8723DU chipsets
 
-	if linux-version compare $version ge 4.4 && [ "$EXTRAWIFI" == yes ]; then
+	if linux-version compare $version ge 5.0 && [ "$EXTRAWIFI" == yes ]; then
 
 		# attach to specifics tag or branch
+		if linux-version compare $version ge 5.12 ; then
+			local rtl8723duver="branch:v5.13.4"
+		else
+			local rtl8723duver="branch:master"
+		fi
+
 		display_alert "Adding" "Wireless drivers for Realtek 8723DU chipsets ${rtl8723duver}" "info"
 
-		if [ "$EXTRAWIFI_LOCAL" == yes ]; then
-			local rtl8723duver="branch:local_rtl8723du-rk"
-			fetch_from_repo "$GITHUB_SOURCE/150balbes/wifi" "rtl8723du" "${rtl8723duver}" "yes"
-		else
-			if linux-version compare $version ge 5.12 ; then
-				local rtl8723duver="branch:v5.13.4"
-			else
-				local rtl8723duver="branch:master"
-			fi
-			fetch_from_repo "$GITHUB_SOURCE/lwfinger/rtl8723du" "rtl8723du" "${rtl8723duver}" "yes"
-		fi
+		fetch_from_repo "$GITHUB_SOURCE/lwfinger/rtl8723du" "rtl8723du" "${rtl8723duver}" "yes"
 		cd "$kerneldir" || exit
 		rm -rf $kerneldir/drivers/net/wireless/rtl8723du
 		mkdir -p $kerneldir/drivers/net/wireless/rtl8723du/

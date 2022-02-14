@@ -50,7 +50,7 @@ FINALDEST=$DEST/images
 if [[ "${MAKE_FOLDERS}" == yes ]]; then
 
 	if [[ "$RC" == yes ]]; then
-		FINALDEST=$DEST/images/"${BOARD}"/RC
+		FINALDEST=$DEST/images/"${BOARD}"/rc
 	elif [[ "$BETA" == yes ]]; then
 		FINALDEST=$DEST/images/"${BOARD}"/nightly
 	else
@@ -139,13 +139,10 @@ MAINLINE_UBOOT_DIR='u-boot'
 
 case $GITHUB_MIRROR in
 	fastgit)
-		GITHUB_SOURCE='https://hub.fastgit.org/'
+		GITHUB_SOURCE='https://hub.fastgit.xyz/'
 		;;
 	gitclone)
 		GITHUB_SOURCE='https://gitclone.com/github.com/'
-		;;
-	cnpmjs)
-		GITHUB_SOURCE='https://github.com.cnpmjs.org/'
 		;;
 	*)
 		GITHUB_SOURCE='https://github.com/'
