@@ -1,0 +1,22 @@
+--- a/arch/arm64/boot/dts/allwinner/sun50i-h6-tanix-tx6.dts
++++ b/arch/arm64/boot/dts/allwinner/sun50i-h6-tanix-tx6.dts
+@@ -161,7 +161,6 @@
+ 	bus-width = <8>;
+ 	non-removable;
+ 	cap-mmc-hw-reset;
+-	mmc-hs200-1_8v;
+ 	status = "okay";
+ };
+ 
+@@ -205,3 +205,11 @@
+ &usb3phy {
+ 	status = "okay";
+ };
++
++&i2s1 {
++	status = "okay";
++};
++
++&sound_hdmi {
++	status = "okay";
++};

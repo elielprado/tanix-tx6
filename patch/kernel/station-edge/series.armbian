@@ -10,7 +10,6 @@
 	patches.armbian/Doc-dt-bindings-net-sun8i-emac-Add-H616-compatible-s.patch
 	patches.armbian/Doc-dt-bindings-arm-sunxi-Add-OrangePi-Zero2-binding.patch
 	patches.armbian/Doc-u-api-media-v4l-Add-scaling-matrix-control.patch
-	patches.armbian/Doc-dt-bindings-gpio-gpio-axp209-add-AXP803-GPIO-bin.patch
 	patches.armbian/Doc-dt-bindings-usb-add-binding-for-DWC3-controller-.patch
 	patches.armbian/Doc-dt-bindings-arm-sunxi-Add-two-H616-board-compatible-strings.patch
 	patches.armbian/drv-mfd-Add-support-for-AC200.patch
@@ -42,13 +41,10 @@
 	patches.armbian/drv-iio-sun4i-gpadc-iio-don-t-force-poweroff.patch
 	patches.armbian/drv-staging-media-sunxi-cedrus-add-H616-variant.patch
 	patches.armbian/drv-soc-sunxi-sram-Add-SRAM-C1-H616-handling.patch
-	patches.armbian/drv-media-cedrus-hevc-Add-support-for-scaling-lists.patch
-	patches.armbian/drv-media-cedrus-Don-t-kernel-map-most-buffers.patch
 	patches.armbian/drv-media-cedrus-hevc-tiles-hack.patch
 	patches.armbian/drv-media-cedrus-Add-callback-for-buffer-cleanup.patch
 	patches.armbian/drv-media-cedrus-hevc-Improve-buffer-management.patch
 	patches.armbian/drv-media-cedrus-h264-Improve-buffer-management.patch
-	patches.armbian/drv-media-cedrus-check-for-H264-HEVC-limitations.patch
 	patches.armbian/WIP-media-uapi-hevc-add-fields-needed-for-rkvdec.patch
 	patches.armbian/HACK-media-uapi-hevc-tiles-and-num_slices.patch
 	patches.armbian/drv-media-cedrus-10-bit-HEVC-support.patch

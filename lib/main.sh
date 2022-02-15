@@ -281,9 +281,9 @@ LINUXFAMILY="${BOARDFAMILY}"
 if [[ -z $BRANCH ]]; then
 
 	options=()
-	[[ $KERNEL_TARGET == *current* ]] && options+=("current" "Kernel 5.10")
-	[[ $KERNEL_TARGET == *legacy* ]] && options+=("legacy" "Old stable / Legacy")
-	[[ $KERNEL_TARGET == *edge* && $EXPERT = yes ]] && options+=("edge" "\Z1Recommended. Kernel 5.15\Zn")
+	[[ $KERNEL_TARGET == *current* ]] && options+=("current" "Recommended. Kernel 5.15")
+	[[ $KERNEL_TARGET == *legacy* ]] && options+=("legacy" "Kernel 5.10 / Legacy")
+	[[ $KERNEL_TARGET == *edge* && $EXPERT = yes ]] && options+=("edge" "\Z1Kernel 5.16 / Testing\Zn")
 
 	# do not display selection dialog if only one kernel branch is available
 	if [[ "${#options[@]}" == 2 ]]; then

@@ -18,16 +18,16 @@ diff --git a/drivers/staging/media/sunxi/cedrus/cedrus.c b/drivers/staging/media
 index 314afde91..180fa9cee 100644
 --- a/drivers/staging/media/sunxi/cedrus/cedrus.c
 +++ b/drivers/staging/media/sunxi/cedrus/cedrus.c
-@@ -335,7 +335,7 @@ static int cedrus_open(struct file *file)
+@@ -336,7 +336,7 @@ static int cedrus_open(struct file *file)
  		goto err_ctrls;
  	}
- 	ctx->dst_fmt.pixelformat = V4L2_PIX_FMT_SUNXI_TILED_NV12;
+ 	ctx->dst_fmt.pixelformat = V4L2_PIX_FMT_NV12_32L32;
 -	cedrus_prepare_format(&ctx->dst_fmt);
 +	cedrus_prepare_format(&ctx->dst_fmt, 0);
  	ctx->src_fmt.pixelformat = V4L2_PIX_FMT_MPEG2_SLICE;
  	/*
  	 * TILED_NV12 has more strict requirements, so copy the width and
-@@ -343,7 +343,7 @@ static int cedrus_open(struct file *file)
+@@ -344,7 +344,7 @@ static int cedrus_open(struct file *file)
  	 */
  	ctx->src_fmt.width = ctx->dst_fmt.width;
  	ctx->src_fmt.height = ctx->dst_fmt.height;

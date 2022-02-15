@@ -13,7 +13,7 @@ case $BRANCH in
 	legacy)
 		
 		KERNELSOURCE="https://github.com/megous/linux"
-		KERNELBRANCH="branch:orange-pi-5.4"
+		KERNELBRANCH="branch:orange-pi-5.10"
 		KERNELPATCHDIR='sunxi-'$BRANCH
 
 	;;
@@ -21,7 +21,7 @@ case $BRANCH in
 	current)
 
 		KERNELSOURCE="https://github.com/megous/linux"
-		KERNELBRANCH="branch:orange-pi-5.10"
+		KERNELBRANCH="branch:orange-pi-5.15"
 		KERNELPATCHDIR='sunxi-'$BRANCH
 
 	;;
@@ -29,7 +29,7 @@ case $BRANCH in
 	edge)
 
 		KERNELSOURCE="https://github.com/megous/linux"
-		KERNELBRANCH="branch:orange-pi-5.15"
+		KERNELBRANCH="branch:orange-pi-5.16"
 		KERNELPATCHDIR='sunxi-'$BRANCH
 
 	;;

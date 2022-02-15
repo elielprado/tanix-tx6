@@ -6,14 +6,14 @@ Subject: [PATCH 051/101] drv:media: cedrus: h264: Improve buffer management
 Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
 ---
  drivers/staging/media/sunxi/cedrus/cedrus.h   |  3 +
- .../staging/media/sunxi/cedrus/cedrus_h264.c  | 97 ++++++++-----------
- 2 files changed, 45 insertions(+), 55 deletions(-)
+ .../staging/media/sunxi/cedrus/cedrus_h264.c  | 95 ++++++++-----------
+ 2 files changed, 44 insertions(+), 54 deletions(-)
 
 diff --git a/drivers/staging/media/sunxi/cedrus/cedrus.h b/drivers/staging/media/sunxi/cedrus/cedrus.h
-index 6ddcff8f5..f280e81d0 100644
+index 54a860ec7..25079901a 100644
 --- a/drivers/staging/media/sunxi/cedrus/cedrus.h
 +++ b/drivers/staging/media/sunxi/cedrus/cedrus.h
-@@ -104,6 +104,9 @@ struct cedrus_buffer {
+@@ -105,6 +105,9 @@ struct cedrus_buffer {
  		struct {
  			unsigned int			position;
  			enum cedrus_h264_pic_type	pic_type;
@@ -24,7 +24,7 @@ index 6ddcff8f5..f280e81d0 100644
  		struct {
  			void		*mv_col_buf;
 diff --git a/drivers/staging/media/sunxi/cedrus/cedrus_h264.c b/drivers/staging/media/sunxi/cedrus/cedrus_h264.c
-index 6e38b37d9..bc3987e55 100644
+index b4173a892..787c1575c 100644
 --- a/drivers/staging/media/sunxi/cedrus/cedrus_h264.c
 +++ b/drivers/staging/media/sunxi/cedrus/cedrus_h264.c
 @@ -55,16 +55,14 @@ static void cedrus_h264_write_sram(struct cedrus_dev *dev,
@@ -36,14 +36,13 @@ index 6e38b37d9..bc3987e55 100644
  					      unsigned int field)
  {
 -	dma_addr_t addr = ctx->codec.h264.mv_col_buf_dma;
-+	dma_addr_t addr = buf->codec.h264.mv_col_buf_dma;
- 
+-
 -	/* Adjust for the position */
 -	addr += position * ctx->codec.h264.mv_col_buf_field_size * 2;
--
--	/* Adjust for the field */
++	dma_addr_t addr = buf->codec.h264.mv_col_buf_dma;
+ 
+ 	/* Adjust for the field */
 -	addr += field * ctx->codec.h264.mv_col_buf_field_size;
-+ 	/* Adjust for the field */
 +	if (field)
 +		addr += buf->codec.h264.mv_col_buf_size / 2;
  
@@ -106,8 +105,8 @@ index 6e38b37d9..bc3987e55 100644
 -	unsigned int mv_col_size;
  	int ret;
  
- 	/* Formula for picture buffer size is taken from CedarX source. */
-@@ -560,38 +577,6 @@ static int cedrus_h264_start(struct cedrus_ctx *ctx)
+ 	/*
+@@ -565,38 +582,6 @@ static int cedrus_h264_start(struct cedrus_ctx *ctx)
  		goto err_pic_buf;
  	}
  
@@ -146,7 +145,7 @@ index 6e38b37d9..bc3987e55 100644
  	if (ctx->src_fmt.width > 2048) {
  		/*
  		 * Formulas for deblock and intra prediction buffer sizes
-@@ -607,7 +592,7 @@ static int cedrus_h264_start(struct cedrus_ctx *ctx)
+@@ -612,7 +597,7 @@ static int cedrus_h264_start(struct cedrus_ctx *ctx)
  					GFP_KERNEL, DMA_ATTR_NO_KERNEL_MAPPING);
  		if (!ctx->codec.h264.deblk_buf) {
  			ret = -ENOMEM;
@@ -155,7 +154,7 @@ index 6e38b37d9..bc3987e55 100644
  		}
  
  		/*
-@@ -635,12 +620,6 @@ static int cedrus_h264_start(struct cedrus_ctx *ctx)
+@@ -640,12 +625,6 @@ static int cedrus_h264_start(struct cedrus_ctx *ctx)
  		       ctx->codec.h264.deblk_buf_dma,
  		       DMA_ATTR_NO_KERNEL_MAPPING);
  
@@ -168,7 +167,7 @@ index 6e38b37d9..bc3987e55 100644
  err_neighbor_buf:
  	dma_free_attrs(dev->dev, CEDRUS_NEIGHBOR_INFO_BUF_SIZE,
  		       ctx->codec.h264.neighbor_info_buf,
-@@ -659,10 +638,6 @@ static void cedrus_h264_stop(struct cedrus_ctx *ctx)
+@@ -664,10 +643,6 @@ static void cedrus_h264_stop(struct cedrus_ctx *ctx)
  {
  	struct cedrus_dev *dev = ctx->dev;
  
@@ -179,7 +178,7 @@ index 6e38b37d9..bc3987e55 100644
  	dma_free_attrs(dev->dev, CEDRUS_NEIGHBOR_INFO_BUF_SIZE,
  		       ctx->codec.h264.neighbor_info_buf,
  		       ctx->codec.h264.neighbor_info_buf_dma,
-@@ -691,6 +666,17 @@ static void cedrus_h264_trigger(struct cedrus_ctx *ctx)
+@@ -696,6 +671,17 @@ static void cedrus_h264_trigger(struct cedrus_ctx *ctx)
  		     VE_H264_TRIGGER_TYPE_AVC_SLICE_DECODE);
  }
  
@@ -197,7 +196,7 @@ index 6e38b37d9..bc3987e55 100644
  struct cedrus_dec_ops cedrus_dec_ops_h264 = {
  	.irq_clear	= cedrus_h264_irq_clear,
  	.irq_disable	= cedrus_h264_irq_disable,
-@@ -699,4 +685,5 @@ struct cedrus_dec_ops cedrus_dec_ops_h264 = {
+@@ -704,4 +690,5 @@ struct cedrus_dec_ops cedrus_dec_ops_h264 = {
  	.start		= cedrus_h264_start,
  	.stop		= cedrus_h264_stop,
  	.trigger	= cedrus_h264_trigger,
@@ -205,4 +204,5 @@ index 6e38b37d9..bc3987e55 100644
  };
 -- 
 2.31.1
+
 

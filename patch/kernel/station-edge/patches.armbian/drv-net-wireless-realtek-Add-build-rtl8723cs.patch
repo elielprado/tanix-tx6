@@ -9,7 +9,7 @@ Subject: [PATCH 1/9] drv:net:wireless:realtek Add build rtl8723cs
  2 files changed, 2 insertions(+)
 
 diff --git a/drivers/net/wireless/realtek/Kconfig b/drivers/net/wireless/realtek/Kconfig
-index 474843277..8417da93a 100644
+index 4a1f0e64d..72e4c7446 100644
 --- a/drivers/net/wireless/realtek/Kconfig
 +++ b/drivers/net/wireless/realtek/Kconfig
 @@ -15,6 +15,7 @@ if WLAN_VENDOR_REALTEK
@@ -18,10 +18,10 @@ index 474843277..8417da93a 100644
  source "drivers/net/wireless/realtek/rtl8xxxu/Kconfig"
 +source "drivers/net/wireless/realtek/rtl8723cs/Kconfig"
  source "drivers/net/wireless/realtek/rtw88/Kconfig"
+ source "drivers/net/wireless/realtek/rtw89/Kconfig"
  
- endif # WLAN_VENDOR_REALTEK
 diff --git a/drivers/net/wireless/realtek/Makefile b/drivers/net/wireless/realtek/Makefile
-index 888b5d594..4a23e3f2a 100644
+index ab25419f5..c539bae2e 100644
 --- a/drivers/net/wireless/realtek/Makefile
 +++ b/drivers/net/wireless/realtek/Makefile
 @@ -5,6 +5,7 @@
@@ -34,5 +34,4 @@ index 888b5d594..4a23e3f2a 100644
  obj-$(CONFIG_RTW88)		+= rtw88/
 -- 
 2.34.1
-
 
