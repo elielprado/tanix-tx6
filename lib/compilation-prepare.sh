@@ -409,6 +409,9 @@ compilation_prepare()
 
 		# patch xradio
                 process_patch_file "${SRC}/patch/misc/xradio.patch" "applying"
+                
+                # disable tux
+                cp "${SRC}/packages/blobs/splash/logo_linux_clut224.ppm" "$kerneldir/drivers/video/logo/"
 	fi
 
 
