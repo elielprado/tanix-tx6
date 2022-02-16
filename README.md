@@ -1,5 +1,5 @@
 Provides dedicated builds for Tanix TX6 tv-box (av-h6-tv board) with support for the ethernet (AC200) and wifi (XR819) device.  
-Please use 'current' build setup for 5.10.\* kernel and 'edge' for 5.15.\* kernel.  
+Please use 'current' build setup for 5.15.\* kernel (recommended) and 'edge' for 5.16.\* kernel.  
   
 Tanix TX6 review:  
 [https://www.hyperhdr.eu/2022/02/tv-box-mania-ii-part-tanix-tx6.html](https://www.hyperhdr.eu/2022/02/tv-box-mania-ii-part-tanix-tx6.html)

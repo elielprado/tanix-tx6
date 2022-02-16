@@ -1,5 +1,18 @@
 --- a/arch/arm64/boot/dts/allwinner/sun50i-h6-tanix-tx6.dts
 +++ b/arch/arm64/boot/dts/allwinner/sun50i-h6-tanix-tx6.dts
+@@ -34,6 +34,12 @@
+ 		};
+ 	};
+ 
++	openvfd {
++		compatible = "open,vfd";
++		dev_name = "openvfd";            
++		status = "okay";
++	};
++
+ 	reg_vcc1v8: regulator-vcc1v8 {
+ 		compatible = "regulator-fixed";
+ 		regulator-name = "vcc1v8";
 @@ -161,7 +161,6 @@
  	bus-width = <8>;
  	non-removable;
@@ -7,16 +20,5 @@
 -	mmc-hs200-1_8v;
  	status = "okay";
  };
- 
-@@ -205,3 +205,11 @@
- &usb3phy {
- 	status = "okay";
- };
-+
-+&i2s1 {
-+	status = "okay";
-+};
-+
-+&sound_hdmi {
-+	status = "okay";
-+};
+
+
