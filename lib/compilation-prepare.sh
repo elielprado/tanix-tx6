@@ -411,8 +411,54 @@ compilation_prepare()
                 process_patch_file "${SRC}/patch/misc/xradio.patch" "applying"
                 
                 # disable tux
+                display_alert "Patching" "Disabling Tux splash" "info"
+                
+                if [ ! -f "${SRC}/packages/blobs/splash/logo_linux_clut224.ppm" ]; then
+                      display_alert "OpenVfd" "packages/blobs/splash/logo_linux_clut224.ppm" "error"
+                      exit
+                fi
+                
                 cp "${SRC}/packages/blobs/splash/logo_linux_clut224.ppm" "$kerneldir/drivers/video/logo/"
-	fi
+                
+                # installing openvfd
+                display_alert "Adding" "LED clock support (openvfd)" "info"
+                fetch_from_repo "$GITHUB_SOURCE/arthur-liberman/linux_openvfd" "openvfd" "branch:master" "yes"
+		
+                cd "$kerneldir" || exit
+                rm -rf "$kerneldir/drivers/misc/openvfd"
+                mkdir -p "$kerneldir/drivers/misc/openvfd/"
+		
+                cp -R "${SRC}"/cache/sources/openvfd/master/driver/* "$kerneldir/drivers/misc/openvfd/"
+                echo "obj-m += openvfd/" >> "$kerneldir/drivers/misc/Makefile"
+				
+                if $(dpkg-architecture -e "${ARCH}"); then
+                       display_alert "Native compilation"
+                elif [[ $(dpkg --print-architecture) == amd64 ]]; then
+                       local toolchain
+                       toolchain=$(find_toolchain "$KERNEL_COMPILER" "$KERNEL_USE_GCC")
+                       [[ -z $toolchain ]] && exit_with_error "Could not find required toolchain" "${KERNEL_COMPILER}gcc $KERNEL_USE_GCC"
+                else
+                       exit_with_error "Architecture [$ARCH] is not supported"
+                fi
+
+                display_alert "OpenVfd service compiler" "ARCH=$ARCHITECTURE CROSS_COMPILE=$KERNEL_COMPILER PATH=${toolchain}" "info"
+                cd "${SRC}"/cache/sources/openvfd/master/
+                rm ./OpenVFDService
+                rm -rf "${SRC}/packages/bsp/common/usr/sbin/OpenVFDService"
+                
+                eval env PATH="${toolchain}:${PATH}" "make ARCH=$ARCHITECTURE CROSS_COMPILE=$KERNEL_COMPILER CC=${KERNEL_COMPILER}gcc OpenVFDService"
+                cp ./OpenVFDService "${SRC}/packages/bsp/common/usr/sbin" || exit
+                
+                if [ ! -f "${SRC}/packages/bsp/common/etc/modprobe.d/vfd.conf" ]; then
+                      display_alert "OpenVfd" "File not exists: packages/bsp/common/etc/modprobe.d/vfd.conf" "error"
+                      exit
+                fi
+                
+                if [ ! -f "${SRC}/packages/bsp/common/etc/systemd/system/openvfd.service" ]; then
+                      display_alert "OpenVfd" "File not exists: packages/bsp/common/etc/systemd/system/openvfd.service" "error"
+                      exit
+                fi                
+        fi
 
 
 
